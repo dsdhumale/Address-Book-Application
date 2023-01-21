@@ -19,7 +19,7 @@ public class AddressBookController {
     IAddressBookService addressBookService;
 
     // API for creating address book data
-    @PostMapping("/add")
+    @PostMapping("/create")
     public ResponseEntity<ResponseDTO> create(@Valid @RequestBody AddressBookDTO addressBookDTO) {
         ResponseDTO response = new ResponseDTO("Address Book Data Created Successfully",
         addressBookService.create(addressBookDTO));
@@ -42,22 +42,23 @@ public class AddressBookController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // API for delete particular address book data by id
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ResponseDTO> deleteDetailById(@PathVariable int id) {
-        addressBookService.deleteById(id);
-        ResponseDTO response = new ResponseDTO("Address Book Data Deleted Successfully ",
-                true);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
 
     // API for Update particular address book data data by id
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseDTO> create(@PathVariable int id,
+    public ResponseEntity<ResponseDTO> update(@PathVariable int id,
             @Valid @RequestBody AddressBookDTO addressBookDTO) {
                 ResponseDTO response = new ResponseDTO("Address Book Data Updated Successfully",
                 addressBookService.update(id, addressBookDTO));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }    
+
+     // API for delete particular address book data by id
+     @DeleteMapping("delete/{id}")
+     public ResponseEntity<ResponseDTO> deleteDetailById(@PathVariable int id) {
+         addressBookService.deleteById(id);
+         ResponseDTO response = new ResponseDTO("Address Book Data Deleted Successfully ",
+                addressBookService.deleteById(id));
+         return new ResponseEntity<>(response, HttpStatus.OK);
+     }
     
 }
