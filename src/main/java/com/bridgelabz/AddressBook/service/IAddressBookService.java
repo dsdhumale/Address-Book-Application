@@ -15,6 +15,11 @@ public interface IAddressBookService {
 
     public AddressBookModel update(int id,AddressBookDTO addressBookDTO);
 
-    public AddressBookModel deleteById(int id);
+    public AddressBookModel delete(int id);
+
+    public List<AddressBookModel> getByname(String name);
+
+    public List<AddressBookModel> getByCity(String city);
+
 
 }
