@@ -12,7 +12,7 @@ public class AddressBookModel {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private String name;
     private String phoneNumber;
     private String email;
