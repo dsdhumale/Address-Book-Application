@@ -10,6 +10,7 @@ import com.bridgelabz.AddressBook.dto.AddressBookDTO;
 import com.bridgelabz.AddressBook.exception.AddressBookException;
 import com.bridgelabz.AddressBook.model.AddressBookModel;
 import com.bridgelabz.AddressBook.repository.AddressBookRepo;
+import com.bridgelabz.AddressBook.util.EmailSenderUtil;
 import com.bridgelabz.AddressBook.util.TokenUtil;
 
 import jakarta.validation.Valid;
@@ -23,19 +24,35 @@ public class AddressBookService implements IAddressBookService {
     @Autowired
     TokenUtil tokenUtil;
 
+    @Autowired
+    EmailSenderUtil emailSender;
+
     @Override
     public AddressBookModel create(AddressBookDTO addressBookDTO) {
         AddressBookModel addressBookData = new AddressBookModel(addressBookDTO.getName(),
                 addressBookDTO.getPhoneNumber(), addressBookDTO.getEmail(),
                 addressBookDTO.getAddress(), addressBookDTO.getCity(),
                 addressBookDTO.getState(), addressBookDTO.getZipcode());
-        return addressBookRepo.save(addressBookData);
+        AddressBookModel addressBook = addressBookRepo.save(addressBookData);
+        emailSender.sendEmail(addressBook.getEmail(), "Created Successfully",
+                "WELCOME...." + addressBook.getName() + " your details are added!\n\n Name:  " + addressBook.getName()
+                        + "\n Phone number:  " + addressBook.getPhoneNumber() + "\n Email:  " + addressBook.getEmail()
+                        + "\n Address:  " + addressBook.getAddress() + "\n City:  " + addressBook.getCity()
+                        + "\n State:  " + addressBook.getState());
+        return addressBook;
     }
 
     @Override
     public AddressBookModel getById(long id) throws AddressBookException {
         AddressBookModel addressBookData = addressBookRepo.findById(id)
                 .orElseThrow(() -> new AddressBookException("Address Book data not found for id " + id));
+        emailSender.sendEmail(addressBookData.getEmail(), "Fetched Successfully",
+                "WELCOME...." + addressBookData.getName() + " your details are fetched!\n\n Name:  "
+                        + addressBookData.getName()
+                        + "\n Phone number:  " + addressBookData.getPhoneNumber() + "\n Email:  "
+                        + addressBookData.getEmail()
+                        + "\n Address:  " + addressBookData.getAddress() + "\n City:  " + addressBookData.getCity()
+                        + "\n State:  " + addressBookData.getState());
         return addressBookData;
     }
 
@@ -104,6 +121,7 @@ public class AddressBookService implements IAddressBookService {
         AddressBookModel addressBookModel = addressBookRepo.save(addressBookData);
         long id = addressBookModel.getId();
         String token = tokenUtil.createToken(id);
+        emailSender.sendEmail(addressBookModel.getEmail(), "Generated Token", "This is your token " + token);
         return token;
     }
 
